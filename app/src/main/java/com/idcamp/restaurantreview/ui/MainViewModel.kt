@@ -9,6 +9,7 @@ import com.idcamp.restaurantreview.data.response.PostReviewResponse
 import com.idcamp.restaurantreview.data.response.Restaurant
 import com.idcamp.restaurantreview.data.response.RestaurantResponse
 import com.idcamp.restaurantreview.data.retrofit.ApiConfig
+import com.idcamp.restaurantreview.utils.Event
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,6 +24,10 @@ class MainViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _snackBarText = MutableLiveData<Event<String>>()
+    val snackBarText: LiveData<Event<String>> = _snackBarText
+
 
     companion object {
         private val TAG = MainViewModel::class.java.simpleName
@@ -71,9 +76,9 @@ class MainViewModel : ViewModel() {
                 response: Response<PostReviewResponse>
             ) {
                 _isLoading.value = false
-                val responseBody = response.body()
-                if (response.isSuccessful && responseBody != null) {
-                    _listReview.value = responseBody.customerReviews
+                if (response.isSuccessful) {
+                    _listReview.value = response.body()?.customerReviews
+                    _snackBarText.value = Event(response.body()?.message.toString())
                 } else {
                     Log.e(TAG, "onResponse: ${response.message()}")
                 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.idcamp.restaurantreview.R
 import com.idcamp.restaurantreview.data.response.CustomerReviewsItem
 import com.idcamp.restaurantreview.data.response.PostReviewResponse
@@ -47,6 +48,11 @@ class MainActivity : AppCompatActivity() {
             setRestaurantData(restaurant)
         }
 
+        mainViewModel.snackBarText.observe(this) {
+            it.getContentIfNotHandled()?.let { snackBarText ->
+                Snackbar.make(window.decorView.rootView, snackBarText, Snackbar.LENGTH_LONG).show()
+            }
+        }
 
         val layoutManager = LinearLayoutManager(this)
         binding.rvReview.layoutManager = layoutManager
